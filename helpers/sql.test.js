@@ -1,4 +1,5 @@
-const { sqlForPartialUpdate } = require("./sql");
+const { BadRequestError } = require("../expressError");
+const { sqlForPartialUpdate, sqlForFilterGet } = require("./sql");
 
 describe("Test sqlForPartialUpdate function", function () {
   test("Turn JSON data into proper set columns and values", function () {
@@ -16,5 +17,27 @@ describe("Test sqlForPartialUpdate function", function () {
         setCols: '"first_name"=$1, "is_admin"=$2',
         values: ["John", true]
     })
+  });
+});
+
+describe("Test sqlForFilterGet function", function () {
+  test("Use Parameters to construct the query and values for WHERE", function () {
+    const name = "JOO";
+    const minEmployees = 0;
+    const maxEmployees = 100;
+
+    const result = sqlForFilterGet(name, minEmployees, maxEmployees);
+    expect(result).toEqual({
+        whereCol: `LOWER(name) LIKE LOWER($1) AND num_employees >= $2 AND num_employees <= $3`,
+        values: ["%JOO%", 0, 100]
+    })
+  });
+  test("Invalid minEmployees and maxEmployees", function () {
+    const name = undefined;
+    const minEmployees = 200;
+    const maxEmployees = 100;
+
+    expect(function(){ sqlForFilterGet(name, minEmployees, maxEmployees)}).toThrow();
+    // you must wrap the code in function, otherwise the error will not be caught.
   });
 });

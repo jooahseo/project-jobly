@@ -12,9 +12,8 @@ describe("Test sqlForPartialUpdate function", function () {
       isAdmin: "is_admin",
     };
     const result = sqlForPartialUpdate(data,jsToSql);
-    const trimmed = '"first_name"=$1, "is_admin"=$2'
     expect(result).toEqual({
-        setCols: trimmed,
+        setCols: '"first_name"=$1, "is_admin"=$2',
         values: ["John", true]
     })
   });

@@ -1,6 +1,6 @@
 const { BadRequestError } = require("../expressError");
 
-/** Function to construct the part of the sql query call
+/** Function to construct the SET part of the sql query call
  *
  * Example:
  * dataToUpdate = { firstName: "John", isAdmin: true }
@@ -22,4 +22,45 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-module.exports = { sqlForPartialUpdate };
+/** Function to construct the FILTER part of the sql query call
+ *
+ * Example:
+ * name= "Joo", minEmployees = 100, maxEmployees = 200
+ * Returns {
+ *  whereCol: "LOWER(name) LIKE LOWER($1) AND
+ *             num_employees >= $2 AND
+ *             num_employees <= $3"
+ *  values: ["%Joo%", 100, 200]
+ * }
+ */
+
+function sqlForFilterGet(name, minEmployees, maxEmployees) {
+  if (minEmployees > maxEmployees) {
+    throw new BadRequestError(
+      "minEmployees cannot be greater than maxEmployees"
+    );
+  }
+  const whereCol = [];
+  const values = [];
+  let idx = 1;
+  if (name) {
+    whereCol.push(`LOWER(name) LIKE LOWER($${idx})`);
+    values.push(`%${name}%`);
+    idx++;
+  }
+  if (minEmployees || minEmployees === 0) {
+    whereCol.push(`num_employees >= $${idx}`);
+    values.push(minEmployees);
+    idx++;
+  }
+  if (maxEmployees) {
+    whereCol.push(`num_employees <= $${idx}`);
+    values.push(maxEmployees);
+  }
+  return {
+    whereCol: whereCol.join(" AND "),
+    values: values,
+  };
+}
+
+module.exports = { sqlForPartialUpdate, sqlForFilterGet };

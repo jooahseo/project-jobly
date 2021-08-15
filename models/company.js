@@ -26,7 +26,6 @@ class Company {
 
     if (duplicateCheck.rows[0])
       throw new BadRequestError(`Duplicate company: ${handle}`);
-
     const result = await db.query(
       `INSERT INTO companies
            (handle, name, description, num_employees, logo_url)
@@ -34,8 +33,8 @@ class Company {
            RETURNING handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl"`,
       [handle, name, description, numEmployees, logoUrl]
     );
-    const company = result.rows[0];
 
+    const company = result.rows[0];
     return company;
   }
 

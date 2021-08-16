@@ -23,6 +23,8 @@ class Job {
     if (handleCheck.rows.length === 0) {
       throw new BadRequestError(`company: ${company_handle} not found`);
     }
+    if(!salary) salary = null;
+    if(!equity) equity = null;
     const result = await db.query(
       `INSERT INTO jobs (title, salary, equity, company_handle)
        VALUES ($1, $2, $3, $4)

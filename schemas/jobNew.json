@@ -8,44 +8,21 @@
     ],
     "properties": {
         "title": {
-            "$id": "#/properties/title",
             "type": "string",
-            "title": "The title schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-                "Software Engineer"
-            ]
+            "minLength": 1,
+            "maxLength": 50
         },
         "salary": {
-            "$id": "#/properties/salary",
             "type": ["integer", "null"],
-            "title": "The salary schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": null,
-            "examples": [
-                85000
-            ]
+            "default": null
         },
         "equity": {
-            "$id": "#/properties/equity",
             "type": ["number", "null"],
-            "title": "The equity schema",
-            "description": "An explanation about the purpose of this instance.",
             "default": null,
-            "examples": [
-                0.075
-            ]
+            "maximum": 1.0
         },
         "company_handle": {
-            "$id": "#/properties/company_handle",
-            "type": "string",
-            "title": "The company_handle schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-                "amazon"
-            ]
+            "type": "string"
         }
     },
     "additionalProperties": false

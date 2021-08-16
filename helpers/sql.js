@@ -22,7 +22,8 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-/** Function to construct the FILTER part of the sql query call
+/** Function to construct the FILTER part of the sql query call 
+ * For company model only
  *
  * Example:
  * name= "Joo", minEmployees = 100, maxEmployees = 200

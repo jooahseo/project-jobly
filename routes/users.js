@@ -81,7 +81,8 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 
 /** GET /[username] => { user }
  *
- * Returns { username, firstName, lastName, isAdmin }
+ * Returns { username, firstName, lastName, isAdmin , jobs }
+ *  where job is [ jobId, jobId, ... ]
  *
  * Authorization required: admin or correct user
  **/

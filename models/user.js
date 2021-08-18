@@ -133,11 +133,14 @@ class User {
            WHERE username = $1`,
       [username]
     );
-
     const user = userRes.rows[0];
-
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
+    const jobRes = await db.query(
+      `SELECT job_id FROM applications WHERE username = $1`, [username]
+    )
+    const jobIds = jobRes.rows.map(val => val.job_id);
+    user.jobs = jobIds.sort((a,b)=> a-b);
     return user;
   }
 

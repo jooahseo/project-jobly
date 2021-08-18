@@ -28,8 +28,8 @@ const router = new express.Router();
 
 router.get("/", async function (req, res, next) {
   try {
-    const { title, minSalary, hasEquity } = req.query;
-    const jobs = await Job.findAll(title, minSalary, hasEquity);
+    const { title, minSalary, hasEquity, company } = req.query;
+    const jobs = await Job.findAll(title, minSalary, hasEquity, company);
     return res.json({ jobs });
   } catch (e) {
     return next(e);

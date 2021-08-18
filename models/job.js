@@ -42,8 +42,8 @@ class Job {
    *  Returns [{ id, title, salary, equity, company_handle }, ... ]
    */
 
-  static async findAll(title, minSalary, hasEquity) {
-    if (!title && !minSalary && !hasEquity) {
+  static async findAll(title, minSalary, hasEquity, company) {
+    if (!title && !minSalary && !hasEquity && !company) {
       const jobs = await db.query(
         `SELECT id, title, salary, equity, company_handle 
              FROM jobs
@@ -51,7 +51,7 @@ class Job {
       );
       return jobs.rows;
     } else {
-      const { whereCol, values } = sqlFilterGetJob(title, minSalary, hasEquity);
+      const { whereCol, values } = sqlFilterGetJob(title, minSalary, hasEquity, company);
       const querySql = `SELECT id, title, salary, 
                      equity, company_handle
                      FROM jobs

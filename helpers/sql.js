@@ -68,12 +68,13 @@ function sqlFilterGetComp(name, minEmployees, maxEmployees) {
  * For job model only
  *
  * Example 1:
- * title= "Software", minSalary= 100000, hasEquity=true
+ * title= "Software", minSalary= 100000, hasEquity=true, company ="amazon"
  * Returns {
  *  whereCol: "LOWER(title) LIKE LOWER($1) AND
  *             salary >= $2 AND
- *             equity > 0"
- *  values: ["%Software%", 100000]
+ *             equity > 0 AND
+ *             company = $3"
+ *  values: ["%Software%", 100000, "amazon"]
  * }
  * 
  * Example 2:
@@ -85,7 +86,7 @@ function sqlFilterGetComp(name, minEmployees, maxEmployees) {
  * }
  */
 
-function sqlFilterGetJob(title, minSalary, hasEquity) {
+function sqlFilterGetJob(title, minSalary, hasEquity, company) {
   const whereCol = [];
   const values = [];
   let idx = 1;
@@ -102,7 +103,10 @@ function sqlFilterGetJob(title, minSalary, hasEquity) {
   if (hasEquity === "true") {
     whereCol.push("equity > 0");
   }
-
+  if(company){
+    whereCol.push(`company_handle = $${idx}`);
+    values.push(company)
+  }
   return {
     whereCol: whereCol.join(" AND "),
     values: values,

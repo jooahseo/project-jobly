@@ -1,6 +1,8 @@
 # Jobly Backend
 
-This is the Express backend for Jobly, version 2.
+This is a job searching API using Node, Express, PostgreSQL.
+
+Used JWT(Json Web Token) to authenticate/authorize the user. 
 
 To run this:
 
@@ -9,3 +11,7 @@ To run this:
 To run the tests:
 
     jest -i
+
+**Data flow chart**
+<br><span style="color:red">red arrow</span> indicates it's authenticate/authorize related flow
+![Data flow chart](flowChart/jobly_backend.png?raw=true "Data flow chart")

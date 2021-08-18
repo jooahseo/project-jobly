@@ -17,17 +17,19 @@ const router = new express.Router();
 /** GET /  =>
  *   { jobs: [ { id, title, salary, equity, company_handle }, ...] }
  *
- * Can filter on provided search filters:
- * -
- * -
- * -
+ * Can filter on provided search filters via query:
+ * - title (will find case-insensitive, partial matches)
+ * - minSalary
+ * - hasEquity: true -> jobs with a non-zero amount of equity
+ *              false -> jobs without an equity
  *
  * Authorization required: none
  */
 
 router.get("/", async function (req, res, next) {
   try {
-    const jobs = await Job.findAll();
+    const { title, minSalary, hasEquity } = req.query;
+    const jobs = await Job.findAll(title, minSalary, hasEquity);
     return res.json({ jobs });
   } catch (e) {
     return next(e);
@@ -67,7 +69,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
       throw new BadRequestError(errs);
     }
     const job = await Job.create(req.body);
-    return res.status(201).json( job );
+    return res.status(201).json(job);
   } catch (e) {
     return next(e);
   }

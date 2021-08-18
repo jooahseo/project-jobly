@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlFilterGetJob } = require("../helpers/sql");
 
 /** Related functions for jobs. */
 
@@ -23,8 +23,8 @@ class Job {
     if (handleCheck.rows.length === 0) {
       throw new BadRequestError(`company: ${company_handle} not found`);
     }
-    if(!salary) salary = null;
-    if(!equity) equity = null;
+    if (!salary) salary = null;
+    if (!equity) equity = null;
     const result = await db.query(
       `INSERT INTO jobs (title, salary, equity, company_handle)
        VALUES ($1, $2, $3, $4)
@@ -42,13 +42,24 @@ class Job {
    *  Returns [{ id, title, salary, equity, company_handle }, ... ]
    */
 
-  static async findAll() {
-    const jobs = await db.query(
-      `SELECT id, title, salary, equity, company_handle 
-       FROM jobs
-       ORDER BY title`
-    );
-    return jobs.rows;
+  static async findAll(title, minSalary, hasEquity) {
+    if (!title && !minSalary && !hasEquity) {
+      const jobs = await db.query(
+        `SELECT id, title, salary, equity, company_handle 
+             FROM jobs
+             ORDER BY title`
+      );
+      return jobs.rows;
+    } else {
+      const { whereCol, values } = sqlFilterGetJob(title, minSalary, hasEquity);
+      const querySql = `SELECT id, title, salary, 
+                     equity, company_handle
+                     FROM jobs
+                     WHERE ${whereCol}
+                     ORDER BY title`;
+      const result = await db.query(querySql, values);
+      return result.rows;
+    }
   }
 
   /** Given an id, return data about the job.

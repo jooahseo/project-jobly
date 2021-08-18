@@ -64,4 +64,49 @@ function sqlFilterGetComp(name, minEmployees, maxEmployees) {
   };
 }
 
-module.exports = { sqlForPartialUpdate, sqlFilterGetComp };
+/** Function to construct the FILTER part of the sql query call 
+ * For job model only
+ *
+ * Example 1:
+ * title= "Software", minSalary= 100000, hasEquity=true
+ * Returns {
+ *  whereCol: "LOWER(title) LIKE LOWER($1) AND
+ *             salary >= $2 AND
+ *             equity > 0"
+ *  values: ["%Software%", 100000]
+ * }
+ * 
+ * Example 2:
+ * title= "Software", hasEquity=false
+ * Returns {
+ *  whereCol: "LOWER(title) LIKE LOWER($1) AND
+ *             (equity = 0 OR equity IS NULL)"
+ *  values: ["%Software%"]
+ * }
+ */
+
+function sqlFilterGetJob(title, minSalary, hasEquity) {
+  const whereCol = [];
+  const values = [];
+  let idx = 1;
+  if (title) {
+    whereCol.push(`LOWER(title) LIKE LOWER($${idx})`);
+    values.push(`%${title}%`);
+    idx++;
+  }
+  if (minSalary || minSalary === 0) {
+    whereCol.push(`salary >= $${idx}`);
+    values.push(minSalary);
+    idx++;
+  }
+  if (hasEquity === "true") {
+    whereCol.push("equity > 0");
+  }
+
+  return {
+    whereCol: whereCol.join(" AND "),
+    values: values,
+  };
+}
+
+module.exports = { sqlForPartialUpdate, sqlFilterGetComp, sqlFilterGetJob};

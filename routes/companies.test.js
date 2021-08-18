@@ -145,6 +145,14 @@ describe("GET /companies/:handle", function () {
         description: "Desc1",
         numEmployees: 1,
         logoUrl: "http://c1.img",
+        jobs:[
+          {
+            id: 1,
+            title: "j1",
+            salary: 1,
+            equity: "0.001"
+          }
+        ]
       },
     });
   });
@@ -158,6 +166,14 @@ describe("GET /companies/:handle", function () {
         description: "Desc2",
         numEmployees: 2,
         logoUrl: "http://c2.img",
+        jobs:[
+          {
+            id: 2,
+            title: "j2",
+            salary: 2,
+            equity: "0.002"
+          }
+        ]
       },
     });
   });
@@ -179,14 +195,12 @@ describe("PATCH /companies/:handle", function () {
         })
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.body).toEqual({
-      company: {
         handle: "c1",
         name: "C1-new",
         description: "Desc1",
         numEmployees: 1,
         logoUrl: "http://c1.img",
-      },
-    });
+      });
   });
   test("unauth for user who's not admin", async function () {
     const resp = await request(app)

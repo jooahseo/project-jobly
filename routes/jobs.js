@@ -67,7 +67,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
       throw new BadRequestError(errs);
     }
     const job = await Job.create(req.body);
-    return res.status(201).json({ job });
+    return res.status(201).json( job );
   } catch (e) {
     return next(e);
   }
@@ -112,3 +112,5 @@ router.delete("/:id", ensureAdmin, async function (req, res, next) {
     return next(err);
   }
 });
+
+module.exports = router;

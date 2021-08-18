@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForFilterGet } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlFilterGetComp } = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -58,7 +58,7 @@ class Company {
       );
       return companiesRes.rows;
     } else {
-      const { whereCol, values } = sqlForFilterGet(
+      const { whereCol, values } = sqlFilterGetComp(
         name,
         minEmployees,
         maxEmployees

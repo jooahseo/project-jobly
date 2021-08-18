@@ -35,7 +35,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql={}) {
  * }
  */
 
-function sqlForFilterGet(name, minEmployees, maxEmployees) {
+function sqlFilterGetComp(name, minEmployees, maxEmployees) {
   if (minEmployees > maxEmployees) {
     throw new BadRequestError(
       "minEmployees cannot be greater than maxEmployees"
@@ -64,4 +64,4 @@ function sqlForFilterGet(name, minEmployees, maxEmployees) {
   };
 }
 
-module.exports = { sqlForPartialUpdate, sqlForFilterGet };
+module.exports = { sqlForPartialUpdate, sqlFilterGetComp };

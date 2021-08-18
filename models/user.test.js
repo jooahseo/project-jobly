@@ -153,6 +153,41 @@ describe("get", function () {
   });
 });
 
+/************************************** apply */
+
+describe("apply", function(){
+  test("works", async function(){
+    let job_id = await User.apply("u1", 2);
+    expect(job_id).toEqual(2);
+  });
+  test("already applied", async function(){
+    try{
+      let job_id = await User.apply("u1", 1);
+    }
+    catch(e){
+      expect(e instanceof BadRequestError).toBeTruthy;
+    }
+    
+  });
+  test("Invalid username", async function(){
+    try{
+      await User.apply("u123", 1);
+    }
+    catch(e){
+      expect(e instanceof NotFoundError).toBeTruthy;
+    }
+  });
+  test("Invalid job id", async function(){
+    try{
+      await User.apply("u1", 0);
+    }
+    catch(e){
+      expect(e instanceof NotFoundError).toBeTruthy;
+    }
+  });
+})
+
+
 /************************************** update */
 
 describe("update", function () {

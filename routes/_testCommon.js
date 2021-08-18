@@ -87,6 +87,8 @@ async function commonBeforeAll() {
     equity: 0.003,
     company_handle: "c3",
   });
+
+  await User.apply('u1',1);
 }
 
 async function commonBeforeEach() {

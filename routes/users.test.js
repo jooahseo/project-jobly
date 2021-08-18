@@ -126,6 +126,40 @@ describe("POST /users", function () {
   });
 });
 
+/****************** POST /users/:username/jobs/:id */
+
+describe("POST /users/:username/jobs/:id", function(){
+  test("works for admin", async function(){
+    const resp = await request(app)
+      .post("/users/u1/jobs/2")
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toBe(201);
+    expect(resp.body).toEqual(
+      { applied: 2 }
+    )
+  });
+  test("works for correct user", async function(){
+    const resp = await request(app)
+      .post("/users/u1/jobs/2")
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toBe(201);
+    expect(resp.body).toEqual(
+      { applied: 2 }
+    )
+  });
+  test("unauth for anon", async function(){
+    const resp = await request(app)
+      .post("/users/u1/jobs/2");
+    expect(resp.statusCode).toBe(401);
+  });
+  test("unauth for incorrect user", async function(){
+    const resp = await request(app)
+      .post("/users/u2/jobs/2")
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toBe(401);
+  });
+})
+
 /************************************** GET /users */
 
 describe("GET /users", function () {

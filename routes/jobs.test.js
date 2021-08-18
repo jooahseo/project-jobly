@@ -99,20 +99,20 @@ describe("GET /jobs", function () {
     });
   });
 
-  //   test("get jobs with filter", async function () {
-  //     const resp = await request(app).get("/jobs");
-  //     expect(resp.body).toEqual({
-  //       companies: [
-  //         {
-  //           handle: "c1",
-  //           name: "C1",
-  //           description: "Desc1",
-  //           numEmployees: 1,
-  //           logoUrl: "http://c1.img",
-  //         },
-  //       ],
-  //     });
-  //   });
+    test("ok with filter", async function () {
+      const resp = await request(app).get("/jobs?title=j1");
+      expect(resp.body).toEqual({
+        jobs: [
+          {
+            id: 1,
+            title: "j1",
+            salary: 1,
+            equity: "0.001",
+            company_handle: "c1",
+          },
+        ],
+      });
+    });
 
   test("fails: test next() handler", async function () {
     // there's no normal failure event which will cause this route to fail ---

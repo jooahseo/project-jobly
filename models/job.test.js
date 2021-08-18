@@ -83,6 +83,27 @@ describe("findAll", function () {
       },
     ]);
   });
+  test("work: with filter", async function () {
+    const title = "j"
+    const minSalary = 2
+    const jobs = await Job.findAll(title, minSalary);
+    expect(jobs).toEqual([
+      {
+        id: 2,
+        title: "j2",
+        salary: 2,
+        equity: "0.002",
+        company_handle: "c2",
+      },
+      {
+        id: 3,
+        title: "j3",
+        salary: 3,
+        equity: "0.003",
+        company_handle: "c3",
+      },
+    ]);
+  });
 });
 
 /************************************** get */

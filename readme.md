@@ -13,6 +13,8 @@ To run the tests:
     jest -i
 
 ## Overview
+**Test**:
+<br>unit test, supertest
 
 **Models**:
 <Br> The ORM(Object Relational Mapping) model layers for an each route. 

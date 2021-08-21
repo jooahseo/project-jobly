@@ -15,7 +15,7 @@ class Job {
    * Throw BadRequestError if invalid company_handle
    */
 
-  static async create({ title, salary, equity, company_handle }) {
+  static async create({ title, salary = null, equity = null, company_handle }) {
     const handleCheck = await db.query(
       `SELECT handle FROM companies WHERE handle = $1`,
       [company_handle]
@@ -23,8 +23,6 @@ class Job {
     if (handleCheck.rows.length === 0) {
       throw new BadRequestError(`company: ${company_handle} not found`);
     }
-    if (!salary) salary = null;
-    if (!equity) equity = null;
     const result = await db.query(
       `INSERT INTO jobs (title, salary, equity, company_handle)
        VALUES ($1, $2, $3, $4)

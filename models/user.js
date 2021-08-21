@@ -7,6 +7,7 @@ const {
   NotFoundError,
   BadRequestError,
   UnauthorizedError,
+  ExpressError,
 } = require("../expressError");
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
@@ -137,48 +138,40 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
     const jobRes = await db.query(
-      `SELECT job_id FROM applications WHERE username = $1`, [username]
-    )
-    const jobIds = jobRes.rows.map(val => val.job_id);
-    user.jobs = jobIds.sort((a,b)=> a-b);
+      `SELECT job_id FROM applications WHERE username = $1`,
+      [username]
+    );
+    ////row_to_json
+    const jobIds = jobRes.rows.map((val) => val.job_id);
+    user.jobs = jobIds.sort((a, b) => a - b);
     return user;
   }
 
   /** Apply for job
-   * Check first if username or id are valid.
-   * Check if a pair (username, id) already exists.
-   * then,
    * username, id => added to applications table
+   * Throws an error if username/id is invalid OR username already applied. 
    * Returns job_id
    */
   static async apply(username, id) {
-    const userRes = await db.query(
-      `SELECT username FROM users WHERE username = $1`,[username]
-    )
-    if(userRes.rows.length === 0){
-      throw new NotFoundError(`username ${username} not found`);
+    let applyRes;
+    try {
+      applyRes = await db.query(
+        `INSERT INTO applications
+         VALUES ($1, $2)
+         RETURNING job_id`,
+        [username, id]
+      );
+    } catch (e) {
+      if (e.code === "23503")
+        throw new NotFoundError(`Invalid username or job id`);
+      if (e.code === "23505")
+        throw new BadRequestError(
+          `${username} is already applied for job ${id}`
+        );
+      throw new ExpressError(e.detail);
     }
-    const jobRes = await db.query(
-      `SELECT id FROM jobs WHERE id = $1`,[id]
-    )
-    if(jobRes.rows.length === 0 ){
-      throw new NotFoundError(`job id ${id} not found`);
-    }
-    const userJobRes = await db.query(
-      `SELECT username FROM applications
-       WHERE username = $1 AND job_id = $2`, [username, id]
-    )
-    if(userJobRes.rows.length > 0){
-      throw new BadRequestError(`${username} is already applied for job ${id}`);
-    } 
-    const applyRes = await db.query(
-      `INSERT INTO applications
-       VALUES ($1, $2)
-       RETURNING job_id`,
-       [username, id]
-    );
+
     const job_id = applyRes.rows[0].job_id;
-    console.log("JOB ID FROM apply model method", job_id)
     return job_id;
   }
 
